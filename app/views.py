@@ -11,6 +11,9 @@ def home():
 def index():
     return app.send_static_file('phonebook.html')
 
+@app.route('/lab02')
+def resume():
+    return app.send_static_file('lab02_resume.html')
 
 # This route serves the dictionary d at the route /date
 @app.route("/api/data")
