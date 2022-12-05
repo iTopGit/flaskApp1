@@ -48,7 +48,9 @@ header {
 .person {
    float: right;
    width: 30%;
-   margin: 5%;
+   margin: 0;
+   margin-top: 10%;
+   margin-right: 10%;
 }
 
 .clear {
@@ -57,7 +59,7 @@ header {
 
 .infomation {
     display: table;
-    width: 40%;
+    width: 60%;
     font-size: 30px;
     font-weight: 400;
 }
@@ -89,6 +91,15 @@ header {
     display: table-cell;
     text-align: right;
     padding-right: 30px;
+}
+
+.edt {
+    margin-top: 15px;
+}
+
+.eda {
+    margin: 0;
+    margin-left: 40px;
 }
 
 a {
@@ -129,6 +140,9 @@ footer {
 
 table {
     width: 100%;
+    color: lightgray;
+    font-weight: 100;
+    border-collapse: collapse
 }
 
 .tableboarder {
@@ -155,20 +169,34 @@ th, .day{
     background-color: black;
     color: lightgray;
     height: 70px;
-    border-radius: 30%;
+
 }
 
-.nt {
-    color: rgb(90, 90, 90);
-}
-
-.event {
-    border-style: solid;
-    border-radius: 50%;
-    border-width: 5px;
-    border-color: lightgray;
+td.event {
+    font-weight: 100;
 }
 
 .empty {
-    background-color: rgb(90, 90, 90);
+    background-color: black;
+}
+
+.b-full {
+    border: 5px solid black;
+}
+
+.b-r {
+    border-top: 5px solid black;
+    border-left: 5px solid black;
+    border-bottom: 5px solid black;
+}
+
+.b-b {
+    border-left: 5px solid black;
+    border-top: 5px solid black;
+    border-right: 5px solid black;
+}
+
+.b-x {
+    border-left: 5px solid black;
+    border-top: 5px solid black;
 }
