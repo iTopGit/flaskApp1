@@ -18,7 +18,7 @@ def seed_db():
         Contact(firstname='สมชาย', lastname='ทรงแบด', phone='081-111-1111')) 
         
     db.session.add(
-        BlogEntry(name='name', message='msg', email='mail'))
+        BlogEntry(name='Just An Ape', message='วานรไม่ชอบปัญญาประดิษฐ์', email='วานรไม่มีอีเมล'))
     db.session.commit()
 
 if __name__ == "__main__":
