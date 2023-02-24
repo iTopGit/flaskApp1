@@ -41,6 +41,10 @@ def lab04_bootstrap():
 def crash():
     return 1/0
 
+
+
+
+
 @app.route('/lab10', methods=('GET', 'POST'))
 def lab10_phonebook():
     if request.method == 'POST':
@@ -101,7 +105,6 @@ def lab10_db_contacts():
 
     return jsonify(contacts)
 
-
 @app.route('/lab10/remove_contact', methods=('GET', 'POST'))
 @login_required
 def lab10_remove_contacts():
@@ -114,12 +117,18 @@ def lab10_remove_contacts():
         id_ = result.get('id', '')
         try:
             contact = Contact.query.get(id_)
+            if contact.owner_id == current_user.id:
+                contact.update(**validated_dict)
             db.session.delete(contact)
             db.session.commit()
         except Exception as ex:
             app.logger.debug(ex)
             raise
     return lab10_db_contacts()
+
+
+
+
 
 @app.route('/lab11', methods=('GET', 'POST'))
 def lab11_microblog():
@@ -158,7 +167,7 @@ def lab11_microblog():
 
             db.session.commit()
         return lab11_db_blogentry()
-    return app.send_static_file('lab11_microblog.html')
+    return render_template('lab11_microblog.html')
 
 @app.route("/lab11/blogentry")
 def lab11_db_blogentry():
@@ -183,19 +192,17 @@ def lab11_remove_blogentry():
             raise
     return lab11_db_blogentry()
 
+
+
+
+
 @app.route('/lab12')
 def lab12_index():
    return render_template('lab12/index.html')
 
-
-
-
 @app.route('/lab12/profile')
 def lab12_profile():
    return render_template('lab12/profile.html')
-
-
-
 
 @app.route('/lab12/login', methods=('GET', 'POST'))
 def lab12_login():
@@ -227,9 +234,6 @@ def lab12_login():
 
 
     return render_template('lab12/login.html')
-
-
-
 
 @app.route('/lab12/signup', methods=('GET', 'POST'))
 def lab12_signup():
@@ -291,9 +295,6 @@ def lab12_signup():
         return redirect(url_for('lab12_login'))
     return render_template('lab12/signup.html')
 
-
-
-
 def gen_avatar_url(email, name):
     bgcolor = generate_password_hash(email, method='sha256')[-6:]
     color = hex(int('0xffffff', 0) -
@@ -310,11 +311,60 @@ def gen_avatar_url(email, name):
         bgcolor + "&color=" + color
     return avatar_url
 
-
-
-
 @app.route('/lab12/logout')
-# @login_required
+@login_required
 def lab12_logout():
     logout_user()
     return redirect(url_for('lab12_index'))
+
+
+
+
+
+@app.route('/lab13')
+def lab13_index():
+   return render_template('lab13/index.html')
+
+@app.route('/lab13/profile')
+def lab13_profile():
+   return render_template('lab13/profile.html')
+
+@app.route('/lab13/login', methods=('GET', 'POST'))
+def lab13_login():
+   if request.method == 'POST':
+        # login code goes here
+        email = request.form.get('email')
+        password = request.form.get('password')
+        remember = bool(request.form.get('remember'))
+
+
+        user = AuthUser.query.filter_by(email=email).first()
+ 
+        # check if the user actually exists
+        # take the user-supplied password, hash it, and compare it to the
+        # hashed password in the database
+        if not user or not check_password_hash(user.password, password):
+            flash('Please check your login details and try again.')
+            # if the user doesn't exist or password is wrong, reload the page
+            return redirect(url_for('lab13_login'))
+
+
+        # if the above check passes, then we know the user has the right
+        # credentials
+        login_user(user, remember=remember)
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('lab13_profile')
+        return redirect(next_page)
+
+   return render_template('lab13/login.html')
+
+@app.route('/lab13/signup')
+def lab13_signup():
+    return render_template('lab13/signup.html')
+
+@app.route('/lab13/logout')
+@login_required
+def lab13_logout():
+    logout_user()
+    return redirect(url_for('lab13_index'))

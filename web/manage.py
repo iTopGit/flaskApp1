@@ -17,11 +17,11 @@ def create_db():
 
 @cli.command("seed_db")
 def seed_db():
-    db.session.add(AuthUser(email="flask@204212", name='สมชาย ทรงแบด',
-                            password=generate_password_hash('1234',
+    db.session.add(AuthUser(email="a@a", name='Just An Ape',
+                            password=generate_password_hash('a',
                                                             method='sha256'),
-                            avatar_url='https://ui-avatars.com/api/?name=\
-สมชาย+ทรงแบด&background=83ee03&color=fff'))
+                            avatar_url='https://ui-avatars.com/api/?name=APES&background=83ee03&color=fff'))
+    
     db.session.add(
        PrivateContact(firstname='ส้มโอ', lastname='โอเค',
                       phone='081-111-1112', owner_id=1))
