@@ -31,6 +31,16 @@
                                 Profile
                             </a>
                             {% endif %}
+                            {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('lab13_edit') }}" class="navbar-item">
+                                Edit
+                            </a>
+                            {% endif %}
+                            {% if current_user.is_authenticated %}
+                            <a href="http://localhost:56733/lab11" class="navbar-item">
+                                Tweet
+                            </a>
+                            {% endif %}
                         </div>
                         <div class="navbar-end">
                             {% if not current_user.is_authenticated %}

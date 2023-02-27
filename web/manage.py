@@ -3,9 +3,8 @@ from werkzeug.security import generate_password_hash
 from app import app, db
 from app.models.contact import Contact 
 from app.models.blogentry import BlogEntry
-from app.models.authuser import AuthUser
 
-from app.models.authuser import AuthUser, PrivateContact
+from app.models.authuser import AuthUser, PrivateContact, UserTweet
 
 cli = FlaskGroup(app)
 
@@ -23,11 +22,15 @@ def seed_db():
                             avatar_url='https://ui-avatars.com/api/?name=APES&background=83ee03&color=fff'))
     
     db.session.add(
-       PrivateContact(firstname='ส้มโอ', lastname='โอเค',
+        PrivateContact(firstname='ส้มโอ', lastname='โอเค',
                       phone='081-111-1112', owner_id=1))
+    
+    db.session.add(UserTweet(name='Apes', 
+                             avatar_url='https://ui-avatars.com/api/?name=APES&background=83ee03&color=fff',
+                             message='วานรไม่ชอบปัญญาประดิษฐ์', 
+                             email='for@pe', 
+                             owner_id=1))
 
-    db.session.add(
-        BlogEntry(name='Just An Ape', message='วานรไม่ชอบปัญญาประดิษฐ์', email='วานรไม่มีอีเมล'))
     db.session.commit()
 
 if __name__ == "__main__":

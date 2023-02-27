@@ -138,7 +138,7 @@ def lab11_microblog():
         id_ = result.get('id', '')
         validated = True
         validated_dict = dict()
-        valid_keys = ['name', 'message', 'email']
+        valid_keys = ['name', 'avatar_url','message', 'email']
 
         # validate the input
         for key in result:
@@ -201,6 +201,7 @@ def lab12_index():
    return render_template('lab12/index.html')
 
 @app.route('/lab12/profile')
+@login_required
 def lab12_profile():
    return render_template('lab12/profile.html')
 
@@ -263,6 +264,7 @@ def lab12_signup():
             validated_dict[key] = value
             # code to validate and add user to database goes here
         app.logger.debug("validation done")
+        
         if validated:
             app.logger.debug('validated dict: ' + str(validated_dict))
             email = validated_dict['email']
@@ -326,12 +328,36 @@ def lab13_index():
    return render_template('lab13/index.html')
 
 @app.route('/lab13/profile')
+@login_required
 def lab13_profile():
    return render_template('lab13/profile.html')
 
+@app.route('/lab13/edit', methods=('GET', 'POST'))
+@login_required
+def lab13_edit():
+    if request.method == 'POST':
+        old_name = current_user.name
+        new_name = request.form['name']
+        new_email = request.form['email']
+        current_password = request.form['password']
+        
+        # Check if the current password is correct
+        if check_password_hash(current_user.password, current_password):
+            old_name = current_user.name
+            old_email = current_user.email
+            current_user.name = new_name
+            current_user.email = new_email
+            db.session.commit()
+            
+            # Update all records in the database with the old name and email
+            BlogEntry.query.filter_by(name=old_name, email=old_email).update({BlogEntry.name: new_name, BlogEntry.email: new_email})
+            db.session.commit()
+            return redirect(url_for('lab13_profile'))
+    return render_template('lab13/edit.html')
+
 @app.route('/lab13/login', methods=('GET', 'POST'))
 def lab13_login():
-   if request.method == 'POST':
+    if request.method == 'POST':
         # login code goes here
         email = request.form.get('email')
         password = request.form.get('password')
@@ -339,7 +365,7 @@ def lab13_login():
 
 
         user = AuthUser.query.filter_by(email=email).first()
- 
+
         # check if the user actually exists
         # take the user-supplied password, hash it, and compare it to the
         # hashed password in the database
@@ -357,10 +383,65 @@ def lab13_login():
             next_page = url_for('lab13_profile')
         return redirect(next_page)
 
-   return render_template('lab13/login.html')
+    return render_template('lab13/login.html')
 
-@app.route('/lab13/signup')
+@app.route('/lab13/signup', methods=('GET', 'POST'))
 def lab13_signup():
+    if request.method == 'POST':
+        result = request.form.to_dict()
+        app.logger.debug(str(result))
+ 
+        validated = True
+        validated_dict = {}
+        valid_keys = ['email', 'name', 'password']
+
+
+        # validate the input
+        for key in result:
+            app.logger.debug(str(key)+": " + str(result[key]))
+            # screen of unrelated inputs
+            if key not in valid_keys:
+                continue
+
+
+            value = result[key].strip()
+            if not value or value == 'undefined':
+                validated = False
+                break
+            validated_dict[key] = value
+            # code to validate and add user to database goes here
+        app.logger.debug("validation done")
+        if validated:
+            app.logger.debug('validated dict: ' + str(validated_dict))
+            email = validated_dict['email']
+            name = validated_dict['name']
+            password = validated_dict['password']
+            # if this returns a user, then the email already exists in database
+            user = AuthUser.query.filter_by(email=email).first()
+
+
+            if user:
+                # if a user is found, we want to redirect back to signup
+                # page so user can try again
+                flash('Email address already exists')
+                return redirect(url_for('lab13_signup'))
+
+
+            # create a new user with the form data. Hash the password so
+            # the plaintext version isn't saved.
+            app.logger.debug("preparing to add")
+            avatar_url = gen_avatar_url(email, name)
+            new_user = AuthUser(email=email, name=name,
+                                password=generate_password_hash(
+                                    password, method='sha256'),
+                                avatar_url=avatar_url)
+            # add the new user to the database
+            db.session.add(new_user)
+            db.session.commit()
+
+
+        return redirect(url_for('lab13_login'))
+
     return render_template('lab13/signup.html')
 
 @app.route('/lab13/logout')

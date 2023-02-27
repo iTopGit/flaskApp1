@@ -29,6 +29,12 @@ video.tw-user-medium {
     color: #ffffff;
 }
 
+#logout {
+    border-radius: 20px;
+    background-color: #67b1f9;
+    color: #ffffff;
+}
+
 .content-box {
     background-color: #ffffff;
     margin-bottom: 0px

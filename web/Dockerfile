@@ -30,6 +30,8 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 # copy project
 COPY . /app
 
+# keep Docker process running
+CMD ["tail", "-f", "/dev/null"]
 
 # specify the entry point
 RUN chmod 755 /app/gunicorn_starter.sh

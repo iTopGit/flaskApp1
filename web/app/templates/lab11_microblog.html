@@ -28,22 +28,37 @@
     <!-- Bootstrap Table -->
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.css">
     <script src="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.js"></script>
-
 </head>
 
-<body>
+<body authenticated="{{ 'true' if current_user.is_authenticated else 'false' }}" 
+      name="{{current_user.name}}"
+      email="{{current_user.email}}"
+      avatar_url="{{current_user.avatar_url}}"
+      id="{{current_user.owner_id}}"
+      email="{{current_user.email}}">
   <nav class="navbar navbar-expand-md navbar-light">
     <div class="container">
       <div class="navbar-nav">
-        <a class="nav-item nav-link" href="#"><span class="oi oi-home"></span> Home</a>
-        <a class="nav-item nav-link" href="#"><span class="oi oi-bolt"></span> Moments</a>
+        <a class="nav-item nav-link" href="{{ url_for('lab13_index') }}"><span class="oi oi-home"></span> Home</a>
+        <a class="nav-item nav-link" href="{{ url_for('lab13_profile') }}"><span class="oi oi-bolt"></span> Profile</a>
         <a class="nav-item nav-link" href="#"><span class="oi oi-bell"></span> Notifications</a>
         <a class="nav-item nav-link" href="#"><span class="oi oi-envelope-open"></span> Messages</a>
       </div>
       <form class="form-inline">
         <input class="form-control" id="nav-search" type="search" placeholder="Search Twitter"> &nbsp;
-        <img class="tw-user-small rounded-circle" src="static/img/tweeterUserSmall.jpg"> &nbsp;
-        <button class="btn" id="add_tweet" type="button">Tweet</button>
+        {% if not current_user.is_authenticated %}
+          <a href="{{ url_for('lab13_login') }}">
+            <button class="btn" id="add_tweet" type="button">Tweet</button> &nbsp;
+          </a>
+        {% else %}
+          <button class="btn" id="add_tweet" type="button">Tweet</button> &nbsp;
+          <a href="{{ url_for('lab13_profile') }}">
+            <img class="tw-user-small rounded-circle" src="{{current_user.avatar_url}}"> &nbsp;
+          </a>
+          <a href="{{ url_for('lab13_logout') }}">
+            <button class="btn" id="logout" type="button">Logout</button>
+          </a>
+        {% endif %}
       </form>
     </div>
   </nav>
@@ -61,20 +76,18 @@
             <div id="new-tweet-row" hidden="hidden">
               <div class="row">
                 <div class="col-md-2 text-center">
-                  <img class="tw-user-medium rounded-circle" src="static/img/tweeterUserSmall.jpg">
+                  <img class="tw-user-medium rounded-circle" src="{{current_user.avatar_url}}">
                 </div>
                 <div class="col-md-9">
                   <id="add-edit" class="container">
                     <form id="addTweetForm">
-                      <input type="text" id="name" class="form-control" name="name" placeholder="Your name..." required>
-                      <br>
-                      <input type="email" id="email" class="form-control" name="email" placeholder="Your emali..."
-                        required>
-                      <br>
-                      <textarea id="message" class="form-control" name="message" placeholder="Your message..." rows="5"
+                      <input type="text" id="name" class="form-control" name="name" value ="{{current_user.name}}" hidden="hidden" required> 
+                      <input type="email" id="email" class="form-control" name="email" value ="{{current_user.email}}" hidden="hidden" required>
+                      <textarea id="message" class="form-control" name="message" placeholder="Write something..." rows="5"
                         required></textarea>
                       <br>
-                      <input type="hidden" id="entryid" name="id" value="">
+                      <input type="hidden" id="entryid" name="id" value="{{current_user.owner_id}}">
+                      <input type="hidden" id="avatar_url" name="avatar_url" value="{{current_user.avatar_url}}">
                       <input class="form-control col-3 add-button" type="submit" name="submit" value="Submit">
                       <button class="form-control col-3 add-button" id="clear_form" type="button">Clear</button>
                       <button class="form-control col-3 add-button" id="cancel_form" type="button">Cancel</button>
@@ -134,14 +147,14 @@
           });
 
         $(document).ready(function () {
+          const authenticated = document.querySelector('body').getAttribute('authenticated');
+          console.log(authenticated);
             (function () {
                 $.getJSON("lab11/blogentry", runBlog);
             })();
         });
 
         function refresh_tweet(blogentry_data) {
-            console.log('refresh')
-
             $(".post-box").empty();
             runBlog(blogentry_data);
           }
@@ -156,18 +169,19 @@
         }
 
         function prePopulateForm(id) {
-            console.log('id : ' + id);
             $('#addTweetForm')[0].reset();
             $('#name').val(document.getElementById("name" + id).innerHTML)
             $('#email').val(document.getElementById("email" + id).innerHTML)
             $('#message').val(document.getElementById("message" + id).innerHTML)
             $('#entryid').val(id);
+            const avatar_url = document.querySelector('body').getAttribute('avatar_url');
+            $('#avatar_url').val(avatar_url)
             toggleView();
         }
 
         function removeItem(id) {
             console.log(id);
-            if (!confirm("Delete " + id + ' ' + '?')) {
+            if (!confirm("Are you sure to delete this?")) {
               return false;
             }
             
@@ -194,16 +208,16 @@
         function runBlog(blogentry_data) {
           $.each(blogentry_data, function (i, item) {
             console.log(item.id + ' ' + item.name + ' ' + item.email + ' ' + item.message + ' ' + item.date_created)
-            createBlog(item.id, item.name, item.email, item.message, item.date_created)
+            createBlog(item.id, item.name, item.avatar_url, item.email, item.message, item.date_created)
           });
         }
 
-        function createBlog(id, name, email, message, date_created) {
+        function createBlog(id, name, avatar_url, email, message, date_created) {
             console.log('create')
             var newTweet = $("<div>").addClass("tweet");
             var newRow = $("<div>").addClass("row").appendTo(newTweet);
             var newL = $("<div>").addClass("col-md-2 text-center").appendTo(newRow);
-            var newImg = $("<img>").addClass("tw-user-medium rounded-circle").attr("src", "static/img/tweeterUserSmall.jpg").appendTo(newL);
+            var newImg = $("<img>").addClass("tw-user-medium rounded-circle").attr("src", avatar_url).appendTo(newL);
             var newR = $("<div>").addClass("col-md-10").appendTo(newRow);
             var newInfo = $("<div>").addClass("row tweet-info").appendTo(newR);
             var newContainUser = $("<div>").addClass("col-md-auto").appendTo(newInfo);
@@ -213,27 +227,33 @@
             var newContainBottomArrow = $("<div>").addClass("col tweet-arrow text-muted").appendTo(newInfo);
             var newBottomArrow = $("<span>").addClass("oi oi-arrow-thick-bottom float-right").appendTo(newContainBottomArrow);
             var newText = $("<div>").addClass("tweet-text").attr('id', 'message'+id).text(message).appendTo(newR);
-            var newContainIcon = $("<div>").addClass("row text-muted").appendTo(newR);
-            var newContainIconA = $("<div>").addClass("col-md-2").appendTo(newContainIcon);
-            var newIconA = $("<span>").addClass("oi oi-heart").appendTo(newContainIconA);
-            var newContainIconB = $("<div>").addClass("col-md-2").appendTo(newContainIcon);
-            var newIconB = $("<span>").addClass("oi oi-loop-circular").appendTo(newContainIconB);
-            var newContainIconC = $("<div>").addClass("col-md-2").appendTo(newContainIcon);
-            var newIconC = $("<a>").addClass("oi oi-pencil edit")
-                                   .attr('href', 'javascript:void(0)')
-                                   .appendTo(newContainIconC);
-                $(newIconC).on('click', function() {
-                    prePopulateForm(id);
-                });
-            var newContainIconD = $("<div>").addClass("col-md-2").appendTo(newContainIcon);
-            var newIconD = $("<a>").addClass("oi oi-trash remove")
-                                   .attr('href', 'javascript:void(0)')
-                                   .appendTo(newContainIconD);
-                $(newIconD).on('click', function() {
-                    removeItem(id);
-                });
-            var newL = $("<div>").attr('id', 'email'+id).attr('hidden', 'hidden').text(email).appendTo(newRow);
+            var newEmail = $("<div>").addClass("tweet-usertag text-muted").attr('id', 'email'+id).text(email).appendTo(newR);
 
+            const x = document.querySelector('body').getAttribute('authenticated');
+            console.log(x);
+            const authenticated = document.querySelector('body').getAttribute('authenticated');
+            const userEmail = document.querySelector('body').getAttribute('email');
+            if (authenticated === 'true' && userEmail === email) {
+              var newContainIcon = $("<div>").addClass("row text-muted").appendTo(newR);
+              var newContainIconA = $("<div>").addClass("col-md-2").appendTo(newContainIcon);
+              var newIconA = $("<span>").addClass("oi oi-heart").appendTo(newContainIconA);
+              var newContainIconB = $("<div>").addClass("col-md-2").appendTo(newContainIcon);
+              var newIconB = $("<span>").addClass("oi oi-loop-circular").appendTo(newContainIconB);
+              var newContainIconC = $("<div>").addClass("col-md-2").appendTo(newContainIcon);
+              var newIconC = $("<a>").addClass("oi oi-pencil edit")
+                                    .attr('href', 'javascript:void(0)')
+                                    .appendTo(newContainIconC);
+                  $(newIconC).on('click', function() {
+                      prePopulateForm(id);
+                  });
+              var newContainIconD = $("<div>").addClass("col-md-2").appendTo(newContainIcon);
+              var newIconD = $("<a>").addClass("oi oi-trash remove")
+                                    .attr('href', 'javascript:void(0)')
+                                    .appendTo(newContainIconD);
+                  $(newIconD).on('click', function() {
+                      removeItem(id);
+                  });
+            }
             $(newTweet).prependTo('.post-box');
         };
 
@@ -281,7 +301,10 @@
 
         $("#add_tweet").click(function () {
           clearForm();
-          toggleView();
+          const authenticated = document.querySelector('body').getAttribute('authenticated');
+          if (authenticated === 'true') {
+            toggleView();
+          }
         });
 
         $("#clear_form").click(function () {

@@ -1,6 +1,9 @@
-{% extends "lab12/base.html" %}
+{% extends "lab13/base.html" %}
 {% block content %}
 <h1 class="title">
   Welcome, {{ current_user.name }}!!
 </h1>
+<p class="title">
+  {{ current_user.email }}
+</p>
 {% endblock %}
