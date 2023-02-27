@@ -1,9 +1,29 @@
 body {
-    background-color: #e7ecf0;
+    background-color: rgb(60, 60, 60);
+    color: white
 }
  
+nav,
+.content-box,
+.tweet{
+    background-color: #696969;
+    color: #ffffff;
+}
+
+.add-button {
+    background-color: #1E90FF;
+}
+
+#nav-search {
+    background-color: #DCDCDC;
+    color: #ffffff
+}
+
+.nav-text {
+    color: white;
+}
+
 nav {
-    background-color: #ffffff;
     border-bottom: 1px solid #adb1b4;
     margin-bottom: 10px;
 }
@@ -20,23 +40,22 @@ video.tw-user-medium {
 
 #nav-search {
     border-radius: 20px;
-    background-color: #e7ecf0;
 }
  
 #add_tweet {
     border-radius: 20px;
-    background-color: #67b1f9;
+    background-color: #1E90FF;
     color: #ffffff;
 }
 
 #logout {
     border-radius: 20px;
-    background-color: #67b1f9;
+    background-color: #1E90FF;
     color: #ffffff;
 }
 
 .content-box {
-    background-color: #ffffff;
+
     margin-bottom: 0px
 }
 
@@ -47,10 +66,9 @@ video.tw-user-medium {
 }
 
 .tweet {
-    background-color: #ffffff;
     padding-top: 10px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #edf1f4;
+    border-bottom: 1px solid #DCDCDC;
 }
  
 .tweet-username {
@@ -69,3 +87,57 @@ video.tw-user-medium {
 .add-button {
     display: inline;
 }
+
+.bi {
+    color: #1E90FF;
+}
+
+/* body {
+    animation: color-loop 3s linear infinite;
+    background-color: hsl(0 100% 50%);
+  }
+  
+  @keyframes color-loop {
+    0% {
+        background-color: hsl(0 100% 50%);
+    }
+    8.33% {
+        background-color: hsl(30 100% 50%);
+    }
+    16.67% {
+        background-color: hsl(60 100% 50%);
+    }
+    25% {
+        background-color: hsl(90 100% 50%);
+    }
+    33.33% {
+        background-color: hsl(120 100% 50%);
+    }
+    41.67% {
+        background-color: hsl(150 100% 50%);
+    }
+    50% {
+        background-color: hsl(180 100% 50%);
+    }
+    58.33% {
+        background-color: hsl(210 100% 50%);
+    }
+    66.67% {
+        background-color: hsl(240 100% 50%);
+    }
+    75% {
+        background-color: hsl(270 100% 50%);
+    }
+    83.33% {
+        background-color: hsl(300 100% 50%);
+    }
+    91.67% {
+        background-color: hsl(330 100% 50%);
+    }
+    100% {
+        background-color: hsl(360 100% 50%);
+    }
+} */
+  
+  
+  

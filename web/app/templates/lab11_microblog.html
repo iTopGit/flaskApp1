@@ -10,6 +10,7 @@
         integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
     <link rel="stylesheet" href="static/css/open-iconic-bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
@@ -39,10 +40,10 @@
   <nav class="navbar navbar-expand-md navbar-light">
     <div class="container">
       <div class="navbar-nav">
-        <a class="nav-item nav-link" href="{{ url_for('lab13_index') }}"><span class="oi oi-home"></span> Home</a>
-        <a class="nav-item nav-link" href="{{ url_for('lab13_profile') }}"><span class="oi oi-bolt"></span> Profile</a>
-        <a class="nav-item nav-link" href="#"><span class="oi oi-bell"></span> Notifications</a>
-        <a class="nav-item nav-link" href="#"><span class="oi oi-envelope-open"></span> Messages</a>
+        <a class="nav-item nav-link" href="{{ url_for('lab13_index') }}"><span class="bi bi-house-fill"></span> <span class = "nav-text">Home</span></a>
+        <a class="nav-item nav-link" href="{{ url_for('lab13_profile') }}"><span class="bi bi-person-circle"></span> <span class = "nav-text">Profile</span></a>
+        <a class="nav-item nav-link" href="#"><span class="bi bi-bell-fill"></span> <span class = "nav-text">Notifications</span></a>
+        <a class="nav-item nav-link" href="#"><span class="bi bi-envelope"></span> <span class = "nav-text">Messages</span></a>
       </div>
       <form class="form-inline">
         <input class="form-control" id="nav-search" type="search" placeholder="Search Twitter"> &nbsp;
@@ -73,7 +74,7 @@
       <div id="center_6" class="col-md-6">
         <div class="input-box">
           <div class="new-tweet-row">
-            <div id="new-tweet-row" hidden="hidden">
+            <div id="new-tweet-row" hidden="hidden", style="background-color: #696969;">
               <div class="row">
                 <div class="col-md-2 text-center">
                   <img class="tw-user-medium rounded-circle" src="{{current_user.avatar_url}}">
@@ -88,9 +89,9 @@
                       <br>
                       <input type="hidden" id="entryid" name="id" value="{{current_user.owner_id}}">
                       <input type="hidden" id="avatar_url" name="avatar_url" value="{{current_user.avatar_url}}">
-                      <input class="form-control col-3 add-button" type="submit" name="submit" value="Submit">
-                      <button class="form-control col-3 add-button" id="clear_form" type="button">Clear</button>
-                      <button class="form-control col-3 add-button" id="cancel_form" type="button">Cancel</button>
+                      <input class="form-control col-3 add-button" type="submit" name="submit" value="Submit", style="color: #ffffff;">
+                      <button class="form-control col-3 add-button" id="clear_form" type="button", style="color: #ffffff;">Clear</button>
+                      <button class="form-control col-3 add-button" id="cancel_form" type="button", style="color: #ffffff;">Cancel</button>
                     </form>
                 </div>
               </div>
@@ -214,6 +215,8 @@
 
         function createBlog(id, name, avatar_url, email, message, date_created, edited) {
             console.log('create')
+            const authenticated = document.querySelector('body').getAttribute('authenticated');
+            const userEmail = document.querySelector('body').getAttribute('email');
             var newTweet = $("<div>").addClass("tweet");
             var newRow = $("<div>").addClass("row").appendTo(newTweet);
             var newL = $("<div>").addClass("col-md-2 text-center").appendTo(newRow);
@@ -222,35 +225,32 @@
             var newInfo = $("<div>").addClass("row tweet-info").appendTo(newR);
             var newContainUser = $("<div>").addClass("col-md-auto").appendTo(newInfo);
             var newUserName = $("<span>").addClass("tweet-username").attr('id', 'name'+id).text(name + ' ').appendTo(newContainUser);
-            var newUserTag = $("<span>").addClass("tweet-usertag text-muted").attr('id', 'entryid'+id).text('@' + id + ' ').appendTo(newContainUser);
-            var newAge = $("<span>").addClass("tweet-age text-muted").text(edit_time(date_created)).appendTo(newContainUser);
+            var newAge = $("<span>").addClass("tweet-age text-light").text(edit_time(date_created)).appendTo(newContainUser);
             if (edited) {
-              var newEdited = $("<span>").addClass("tweet-age text-muted").text(' (edited)').appendTo(newContainUser);
+              var newEdited = $("<span>").addClass("tweet-age text-light").text(' (edited)').appendTo(newContainUser);
             }
-            var newContainBottomArrow = $("<div>").addClass("col tweet-arrow text-muted").appendTo(newInfo);
-            var newBottomArrow = $("<span>").addClass("oi oi-arrow-thick-bottom float-right").appendTo(newContainBottomArrow);
-            var newText = $("<div>").addClass("tweet-text").attr('id', 'message'+id).text(message).appendTo(newR);
-            var newEmail = $("<div>").addClass("tweet-usertag text-muted").attr('id', 'email'+id).text(email).appendTo(newR);
-
-            const x = document.querySelector('body').getAttribute('authenticated');
-            console.log(x);
-            const authenticated = document.querySelector('body').getAttribute('authenticated');
-            const userEmail = document.querySelector('body').getAttribute('email');
+            var newContainPen = $("<div>").addClass("col tweet-arrow text-light").appendTo(newInfo);
             if (authenticated === 'true' && userEmail === email) {
-              var newContainIcon = $("<div>").addClass("row text-muted").appendTo(newR);
-              var newContainIconA = $("<div>").addClass("col-md-2").appendTo(newContainIcon);
-              var newIconA = $("<span>").addClass("oi oi-heart").appendTo(newContainIconA);
-              var newContainIconB = $("<div>").addClass("col-md-2").appendTo(newContainIcon);
-              var newIconB = $("<span>").addClass("oi oi-loop-circular").appendTo(newContainIconB);
-              var newContainIconC = $("<div>").addClass("col-md-2").appendTo(newContainIcon);
-              var newIconC = $("<a>").addClass("oi oi-pencil edit")
-                                    .attr('href', 'javascript:void(0)')
-                                    .appendTo(newContainIconC);
-                  $(newIconC).on('click', function() {
+              var newPen = $("<a>").addClass("bi bi-pencil-square float-right edit").attr('href', 'javascript:void(0)').appendTo(newContainPen);
+                $(newPen).on('click', function() {
                       prePopulateForm(id);
                   });
+            }
+            var newText = $("<div>").addClass("tweet-text").attr('id', 'message'+id).text(message).appendTo(newR);
+            var newEmail = $("<div>").addClass("tweet-usertag text-light").attr('id', 'email'+id).text(email).appendTo(newR);
+
+            if (authenticated === 'true' && userEmail === email) {
+              var newContainIcon = $("<div>").addClass("row text-light").appendTo(newR);
+              var newContainHeart = $("<div>").addClass("col-md-2").appendTo(newContainIcon);
+              var newHeart = $("<span>").addClass("bi bi-suit-heart").appendTo(newContainHeart);
+                $(newHeart).on('click', function() {
+                  $(newHeart).toggleClass('bi bi-suit-heart bi bi-suit-heart-fill');
+                });
+              var newContainIconB = $("<div>").addClass("col-md-2").appendTo(newContainIcon);
+              var newIconB = $("<span>").addClass("bi bi-arrow-repeat").appendTo(newContainIconB);
+
               var newContainIconD = $("<div>").addClass("col-md-2").appendTo(newContainIcon);
-              var newIconD = $("<a>").addClass("oi oi-trash remove")
+              var newIconD = $("<a>").addClass("bi bi-trash")
                                     .attr('href', 'javascript:void(0)')
                                     .appendTo(newContainIconD);
                   $(newIconD).on('click', function() {
@@ -275,27 +275,27 @@
 
           var elapsedString = '';
           if (years > 0) {
-              elapsedString += years + ' years';
+              elapsedString += years + ' y';
               return elapsedString + ' ago'
           }
           if (months > 0) {
-              elapsedString += months + ' months ';
+              elapsedString += months + ' m ';
               return elapsedString + ' ago'
           }
           if (days > 0) {
-              elapsedString += days + ' days ';
+              elapsedString += days + ' d ';
               return elapsedString + ' ago'
           }
           if (hours > 0) {
-              elapsedString += hours % 24 + ' hours ';
+              elapsedString += hours % 24 + ' h ';
               return elapsedString + ' ago'
           }
           if (minutes > 0) {
-              elapsedString += minutes % 60 + ' minutes ';
+              elapsedString += minutes % 60 + ' min ';
               return elapsedString + ' ago'
           }
           if (seconds > 0) {
-              elapsedString += seconds % 60 + ' seconds';
+              elapsedString += seconds % 60 + ' s';
               return elapsedString + ' ago'
           }
 
