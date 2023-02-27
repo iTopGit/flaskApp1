@@ -20,12 +20,10 @@ class AuthUser(db.Model, UserMixin):
         self.password = password
         self.avatar_url = avatar_url
 
-    def update(self, email, name, password, avatar_url):
+    def update(self, email, name, avatar_url):
         self.email = email
         self.name = name
-        self.password = password
         self.avatar_url = avatar_url
-
 
 class PrivateContact(Contact, UserMixin, SerializerMixin):
     owner_id = db.Column(db.Integer, db.ForeignKey('auth_users.id'))

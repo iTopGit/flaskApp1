@@ -10,6 +10,7 @@ class BlogEntry(db.Model, SerializerMixin):
     avatar_url = db.Column(db.String(100))
     message = db.Column(db.String(280))
     email = db.Column(db.String(50))
+    edited = db.Column(db.Boolean, default=False)
     date_created = db.Column(db.DateTime)
     date_updated = db.Column(db.DateTime)
     
@@ -21,9 +22,10 @@ class BlogEntry(db.Model, SerializerMixin):
         self.date_created = datetime.now() + timedelta(hours=7)
         self.date_updated = datetime.now() + timedelta(hours=7)
 
-    def update(self, name, avatar_url, message, email):
+    def update(self, name, avatar_url, message, email, ):
         self.name = name
         self.avatar_url = avatar_url
         self.message = message
         self.email = email
+        self.edited = 1
         self.date_updated = datetime.now() + timedelta(hours=7)

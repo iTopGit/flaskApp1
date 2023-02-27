@@ -336,23 +336,27 @@ def lab13_profile():
 @login_required
 def lab13_edit():
     if request.method == 'POST':
-        old_name = current_user.name
+
+        old_email = current_user.email
         new_name = request.form['name']
         new_email = request.form['email']
+
         current_password = request.form['password']
         
         # Check if the current password is correct
         if check_password_hash(current_user.password, current_password):
-            old_name = current_user.name
-            old_email = current_user.email
             current_user.name = new_name
             current_user.email = new_email
+            current_user.avatar_url = gen_avatar_url(new_email, new_name)
             db.session.commit()
             
-            # Update all records in the database with the old name and email
-            BlogEntry.query.filter_by(name=old_name, email=old_email).update({BlogEntry.name: new_name, BlogEntry.email: new_email})
+            # Update all records in the database with the old email
+            BlogEntry.query.filter_by(email=old_email).update({BlogEntry.name: current_user.name, BlogEntry.email: current_user.email, BlogEntry.avatar_url: current_user.avatar_url})
             db.session.commit()
             return redirect(url_for('lab13_profile'))
+        else :
+            flash('Please check your login details and try again.')
+            return redirect(url_for('lab13_edit'))
     return render_template('lab13/edit.html')
 
 @app.route('/lab13/login', methods=('GET', 'POST'))
