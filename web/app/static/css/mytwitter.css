@@ -19,7 +19,8 @@ body {
 .navbar,
 .box,
 .content-box,
-.tweet{
+.tweet,
+#new-tweet-row {
     background-color: rgb(50, 50, 50);
 }
 
@@ -68,7 +69,7 @@ video.tw-user-medium {
 }
 
 #new-tweet-row {
-    background-color: #eaf5fe;
+    
     padding-top: 10px;
     padding-bottom: 10px;
 }
