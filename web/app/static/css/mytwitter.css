@@ -1,13 +1,26 @@
 body {
-    background-color: rgb(60, 60, 60);
+    background-color: black;
     color: white
 }
- 
-nav,
+
+
+
+.nav,
+.content-box,
+.tweet,
+.text,
+#nav-search,
+.nav-text,
+.title {
+    color: white;
+}
+
+.nav,
+.navbar,
+.box,
 .content-box,
 .tweet{
-    background-color: #696969;
-    color: #ffffff;
+    background-color: rgb(50, 50, 50);
 }
 
 .add-button {
@@ -16,11 +29,6 @@ nav,
 
 #nav-search {
     background-color: #DCDCDC;
-    color: #ffffff
-}
-
-.nav-text {
-    color: white;
 }
 
 nav {
@@ -42,7 +50,7 @@ video.tw-user-medium {
     border-radius: 20px;
 }
  
-#add_tweet {
+.nav-button {
     border-radius: 20px;
     background-color: #1E90FF;
     color: #ffffff;
