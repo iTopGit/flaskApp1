@@ -342,6 +342,16 @@ def lab13_edit():
         new_email = request.form['email']
 
         current_password = request.form['password']
+
+        user = AuthUser.query.filter_by(email=new_email).first()
+
+
+        if user:
+            # if a user is found, we want to redirect back to signup
+            # page so user can try again
+            flash('Email address already exists')
+            return redirect(url_for('lab13_edit'))
+
         
         # Check if the current password is correct
         if check_password_hash(current_user.password, current_password):
@@ -384,7 +394,7 @@ def lab13_login():
         login_user(user, remember=remember)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('lab13_profile')
+            next_page = url_for('lab11_microblog')
         return redirect(next_page)
 
     return render_template('lab13/login.html')
@@ -443,7 +453,6 @@ def lab13_signup():
             db.session.add(new_user)
             db.session.commit()
 
-
         return redirect(url_for('lab13_login'))
 
     return render_template('lab13/signup.html')
@@ -452,4 +461,4 @@ def lab13_signup():
 @login_required
 def lab13_logout():
     logout_user()
-    return redirect(url_for('lab13_index'))
+    return redirect(url_for('lab11_microblog'))
